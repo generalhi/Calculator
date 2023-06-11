@@ -28,6 +28,7 @@ public class ParserTests
         {
             return e[0];
         }
+
         return expression.ToString()!;
     }
 }

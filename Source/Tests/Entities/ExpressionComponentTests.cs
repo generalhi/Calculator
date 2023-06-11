@@ -14,7 +14,7 @@ public class ExpressionComponentTests
         Assert.That(c.Type, Is.EqualTo(ComponentType.Value));
         Assert.That(c.Value, Is.EqualTo(1f));
     }
-    
+
     [Test]
     public void InitTest2()
     {

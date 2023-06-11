@@ -17,7 +17,7 @@ namespace Calculator
                 errors.Add("Math expression text not found!");
                 return expression;
             }
-            
+
             var startIndex = 0;
             for (var i = 0; i < text.Length; i++)
             {
@@ -31,7 +31,7 @@ namespace Calculator
                     ParseMathOperator(text, i, expression);
                     startIndex = i + 1;
 
-                    if (expression.Count > 1 && 
+                    if (expression.Count > 1 &&
                         expression[^2].Type == ComponentType.Operator &&
                         expression[^1].Type == ComponentType.Operator &&
                         expression[^2].Operator != OperatorType.Begin &&
@@ -39,7 +39,8 @@ namespace Calculator
                         expression[^1].Operator != OperatorType.Begin &&
                         expression[^1].Operator != OperatorType.End)
                     {
-                        errors.Add($"Error: Double operator '{expression[^2].Operator.ToChar()}{expression[^1].Operator.ToChar()}'.");
+                        errors.Add(
+                            $"Error: Double operator '{expression[^2].Operator.ToChar()}{expression[^1].Operator.ToChar()}'.");
                         return expression;
                     }
 

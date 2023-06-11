@@ -124,7 +124,7 @@ namespace Calculator
         {
             Span<char> dest = new char[64];
             var sb = new NewStringBuilder();
-            
+
             foreach (var item in _items)
             {
                 switch (item.Type)
@@ -135,6 +135,7 @@ namespace Calculator
                         {
                             sb.Append(dest.Slice(0, length));
                         }
+
                         break;
                     }
                     case ComponentType.Operator:

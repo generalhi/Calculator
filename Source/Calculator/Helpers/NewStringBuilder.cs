@@ -5,11 +5,11 @@ namespace Calculator.Helpers
     public ref struct NewStringBuilder
     {
         private const int BufferStartSize = 16;
-        
+
         private int _position;
         private Span<char> _buffer;
         private readonly int _capacity = 0;
-        
+
         public int Length => _buffer.Length;
         public ref char this[int index] => ref _buffer[index];
 
@@ -18,7 +18,7 @@ namespace Calculator.Helpers
             _position = 0;
             _buffer = new char[BufferStartSize];
         }
-        
+
         public NewStringBuilder(int capacity = 0)
         {
             _position = 0;
@@ -31,7 +31,7 @@ namespace Calculator.Helpers
         {
             _position = 0;
         }
-        
+
         public void Append(char c)
         {
             if (_position >= _buffer.Length - 1)
@@ -57,7 +57,7 @@ namespace Calculator.Helpers
         }
 
         public override string ToString() => new(_buffer[.._position]);
-        
+
         private void ResizeBuffer(int addLength)
         {
             var newSize = _position + addLength;

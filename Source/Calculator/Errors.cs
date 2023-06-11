@@ -9,7 +9,7 @@ namespace Calculator
         public bool IsPresent => _items.Count > 0;
 
         public string this[int index] => _items[index];
-        
+
         public void Clear()
         {
             _items.Clear();

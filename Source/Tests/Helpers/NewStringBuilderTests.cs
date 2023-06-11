@@ -23,7 +23,7 @@ public class NewStringBuilderTests
         sb.Append("begin");
         sb.Clear();
         sb.Append("end");
-        
+
         Assert.That(sb.ToString(), Is.EqualTo("end"));
     }
 
@@ -33,11 +33,11 @@ public class NewStringBuilderTests
         var sb = new NewStringBuilder();
         sb.Append("0000000000000000");
         sb.Append('c');
-        
+
         Assert.That(sb.ToString(), Is.EqualTo("0000000000000000c"));
         Assert.That(sb.Length, Is.EqualTo(64));
     }
-    
+
     [Test]
     public void AppendTest()
     {
@@ -45,17 +45,17 @@ public class NewStringBuilderTests
         sb.Append("begin");
         sb.Append(" ");
         sb.Append("end");
-        
+
         Assert.That(sb.ToString(), Is.EqualTo("begin end"));
     }
-    
+
     [Test]
     public void AppendLineTest()
     {
         var sb = new NewStringBuilder();
         sb.AppendLine("begin");
         sb.AppendLine("end");
-        
+
         Assert.That(sb.ToString(), Is.EqualTo("begin\r\nend\r\n"));
     }
 }
