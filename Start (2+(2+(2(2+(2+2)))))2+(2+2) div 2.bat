@@ -1,0 +1,1 @@
+start Source\Calculator\bin\Debug\net6.0\Calculator.exe "(2+(2+(2(2+(2+2)))))2+(2+2)/2"
