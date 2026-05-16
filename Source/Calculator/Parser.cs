@@ -1,4 +1,5 @@
-﻿using Calculator.Entities;
+﻿using System.Globalization;
+using Calculator.Entities;
 using Calculator.Enums;
 using Calculator.Extensions;
 using Calculator.Helpers;
@@ -66,7 +67,7 @@ namespace Calculator
             IErrors errors)
         {
             var subString = text.AsSpan(startIndex, length);
-            if (float.TryParse(subString, out var val))
+            if (float.TryParse(subString, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
             {
                 expression.Add(new ExpressionComponent(val));
             }

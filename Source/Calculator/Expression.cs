@@ -1,4 +1,5 @@
-﻿using Calculator.Entities;
+﻿using System.Globalization;
+using Calculator.Entities;
 using Calculator.Enums;
 using Calculator.Extensions;
 using Calculator.Helpers;
@@ -123,7 +124,7 @@ namespace Calculator
         public override string ToString()
         {
             Span<char> dest = new char[64];
-            var sb = new NewStringBuilder();
+            using var sb = new NewStringBuilder();
 
             foreach (var item in _items)
             {
@@ -131,7 +132,7 @@ namespace Calculator
                 {
                     case ComponentType.Value:
                     {
-                        if (item.Value.TryFormat(dest, out var length))
+                        if (item.Value.TryFormat(dest, out var length, default, CultureInfo.InvariantCulture))
                         {
                             sb.Append(dest.Slice(0, length));
                         }

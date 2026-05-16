@@ -8,6 +8,7 @@ namespace Calculator.Helpers
 
         private int _position;
         private Span<char> _buffer;
+        private char[]? _rentedBuffer;
         private readonly int _capacity = 0;
 
         public int Length => _buffer.Length;
@@ -17,12 +18,14 @@ namespace Calculator.Helpers
         {
             _position = 0;
             _buffer = new char[BufferStartSize];
+            _rentedBuffer = null;
         }
 
         public NewStringBuilder(int capacity = 0)
         {
             _position = 0;
             _buffer = new char[BufferStartSize];
+            _rentedBuffer = null;
 
             _capacity = capacity;
         }
@@ -58,6 +61,18 @@ namespace Calculator.Helpers
 
         public override string ToString() => new(_buffer[.._position]);
 
+        public void Dispose()
+        {
+            var toReturn = _rentedBuffer;
+            _rentedBuffer = null;
+            _buffer = default;
+            _position = 0;
+            if (toReturn != null)
+            {
+                ArrayPool<char>.Shared.Return(toReturn);
+            }
+        }
+
         private void ResizeBuffer(int addLength)
         {
             var newSize = _position + addLength;
@@ -69,9 +84,16 @@ namespace Calculator.Helpers
             newSize = _capacity > 0 ? newSize + _capacity : newSize * 2;
 
             var rented = ArrayPool<char>.Shared.Rent(newSize);
-            _buffer.CopyTo(rented);
+            _buffer[.._position].CopyTo(rented);
+
+            var previousRented = _rentedBuffer;
+            _rentedBuffer = rented;
             _buffer = rented;
-            ArrayPool<char>.Shared.Return(rented);
+
+            if (previousRented != null)
+            {
+                ArrayPool<char>.Shared.Return(previousRented);
+            }
         }
     }
 }
