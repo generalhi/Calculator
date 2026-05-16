@@ -4,12 +4,11 @@ namespace Calculator.Helpers
 {
     public ref struct NewStringBuilder
     {
-        private const int BufferStartSize = 16;
+        private const int DefaultCapacity = 16;
 
         private int _position;
         private Span<char> _buffer;
         private char[]? _rentedBuffer;
-        private readonly int _capacity = 0;
 
         public int Capacity => _buffer.Length;
         public int Length => _position;
@@ -18,17 +17,20 @@ namespace Calculator.Helpers
         public NewStringBuilder()
         {
             _position = 0;
-            _buffer = new char[BufferStartSize];
+            _buffer = new char[DefaultCapacity];
             _rentedBuffer = null;
         }
 
-        public NewStringBuilder(int capacity = 0)
+        public NewStringBuilder(int initialCapacity)
         {
-            _position = 0;
-            _buffer = new char[BufferStartSize];
-            _rentedBuffer = null;
+            if (initialCapacity <= 0)
+            {
+                initialCapacity = DefaultCapacity;
+            }
 
-            _capacity = capacity;
+            _position = 0;
+            _buffer = new char[initialCapacity];
+            _rentedBuffer = null;
         }
 
         public void Clear()
@@ -78,7 +80,7 @@ namespace Calculator.Helpers
                 return;
             }
 
-            newSize = _capacity > 0 ? newSize + _capacity : newSize * 2;
+            newSize *= 2;
 
             var rented = ArrayPool<char>.Shared.Rent(newSize);
             _buffer[.._position].CopyTo(rented);
