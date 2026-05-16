@@ -23,14 +23,18 @@ namespace Calculator
             Console.WriteLine(expression.ToString());
 #endif
             expression.ToReversePolishNotation(errors);
+            if (errors.IsPresent)
+            {
+                return null;
+            }
 #if DEBUG
             Console.WriteLine(expression.ToString());
             Console.WriteLine("Operations:");
 #endif
-            return CalcExpression(expression);
+            return CalcExpression(expression, errors);
         }
 
-        private float CalcExpression(IExpression expression)
+        private static float? CalcExpression(IExpression expression, IErrors errors)
         {
             var stack = new Stack<IExpressionComponent>();
             var n = 1;
@@ -46,6 +50,12 @@ namespace Calculator
                     }
                     case ComponentType.Operator:
                     {
+                        if (stack.Count < 2)
+                        {
+                            errors.Add($"Error: Missing operand for '{c.Operator.ToChar()}'.");
+                            return null;
+                        }
+
                         var c2 = stack.Pop();
                         var c1 = stack.Pop();
                         var result = OperatorsHelper.Function[c.Operator](c1.Value, c2.Value);
@@ -56,6 +66,12 @@ namespace Calculator
                         break;
                     }
                 }
+            }
+
+            if (stack.Count == 0)
+            {
+                errors.Add("Error: Invalid expression.");
+                return null;
             }
 
             return stack.Peek().Value;

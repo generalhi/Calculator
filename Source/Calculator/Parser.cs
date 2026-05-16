@@ -54,9 +54,73 @@ namespace Calculator
                 }
             }
 
+            ValidateExpression(expression, errors);
+            if (errors.IsPresent)
+            {
+                return expression;
+            }
+
             expression.Normalize();
 
             return expression;
+        }
+
+        private static void ValidateExpression(IExpression expression, IErrors errors)
+        {
+            if (expression.Count == 0)
+            {
+                return;
+            }
+
+            var first = expression[0];
+            if (first.Type == ComponentType.Operator && first.Operator != OperatorType.Begin)
+            {
+                errors.Add($"Error: Expression starts with operator '{first.Operator.ToChar()}'.");
+                return;
+            }
+
+            var last = expression[^1];
+            if (last.Type == ComponentType.Operator && last.Operator != OperatorType.End)
+            {
+                errors.Add($"Error: Expression ends with operator '{last.Operator.ToChar()}'.");
+                return;
+            }
+
+            var balance = 0;
+            for (var i = 0; i < expression.Count; i++)
+            {
+                var c = expression[i];
+                if (c.Type != ComponentType.Operator)
+                {
+                    continue;
+                }
+
+                if (c.Operator == OperatorType.Begin)
+                {
+                    balance++;
+                    if (i + 1 < expression.Count &&
+                        expression[i + 1].Type == ComponentType.Operator &&
+                        expression[i + 1].Operator == OperatorType.End)
+                    {
+                        errors.Add("Error: Empty parentheses.");
+                        return;
+                    }
+                }
+                else if (c.Operator == OperatorType.End)
+                {
+                    balance--;
+                    if (balance < 0)
+                    {
+                        errors.Add("Error: Unbalanced parentheses.");
+                        return;
+                    }
+                }
+            }
+
+            if (balance != 0)
+            {
+                errors.Add("Error: Unbalanced parentheses.");
+            }
         }
 
         private void ParseFloatSubString(
