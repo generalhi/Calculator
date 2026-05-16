@@ -51,7 +51,10 @@
             }
 
             Console.WriteLine("End");
-            Console.ReadKey();
+            if (!Console.IsInputRedirected)
+            {
+                Console.ReadKey();
+            }
         }
     }
 }

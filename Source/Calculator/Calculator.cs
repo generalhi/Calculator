@@ -58,6 +58,12 @@ namespace Calculator
 
                         var c2 = stack.Pop();
                         var c1 = stack.Pop();
+                        if (c.Operator == OperatorType.Div && c2.Value == 0f)
+                        {
+                            errors.Add("Error: Division by zero.");
+                            return null;
+                        }
+
                         var result = OperatorsHelper.Function[c.Operator](c1.Value, c2.Value);
                         stack.Push(new ExpressionComponent(result));
 #if DEBUG
