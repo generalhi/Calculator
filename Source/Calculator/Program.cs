@@ -42,7 +42,7 @@
                 }
                 else
                 {
-                    Console.WriteLine($"Result = {result}");
+                    Console.WriteLine(FormattableString.Invariant($"Result = {result}"));
                 }
             }
             catch (Exception e)

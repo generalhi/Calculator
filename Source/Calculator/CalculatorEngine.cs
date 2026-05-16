@@ -65,7 +65,8 @@ namespace Calculator
                         var result = OperatorsHelper.Function[c.Operator](c1.Value, c2.Value);
                         stack.Push(new ExpressionComponent(result));
 #if DEBUG
-                        Console.WriteLine($"{n++}) {c1.Value}{c.Operator.ToChar()}{c2.Value}={result}");
+                        Console.WriteLine(FormattableString.Invariant(
+                            $"{n++}) {c1.Value}{c.Operator.ToChar()}{c2.Value}={result}"));
 #endif
                         break;
                     }
