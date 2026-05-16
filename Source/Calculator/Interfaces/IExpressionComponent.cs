@@ -5,7 +5,8 @@ namespace Calculator.Interfaces
     public interface IExpressionComponent
     {
         ComponentType Type { get; }
-        float Value { get; }
+        decimal Value { get; }
         OperatorType Operator { get; }
+        BracketType Bracket { get; }
     }
 }

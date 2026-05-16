@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Calculator.Entities;
 using Calculator.Enums;
 using Calculator.Extensions;
@@ -9,6 +9,12 @@ namespace Calculator
 {
     public class Parser : IParser
     {
+        private static readonly HashSet<char> Operators =
+            new HashSet<char> { OperatorsHelper.Add, OperatorsHelper.Sub, OperatorsHelper.Mul, OperatorsHelper.Div };
+
+        private static readonly HashSet<char> Brackets =
+            new HashSet<char> { BracketsHelper.Open, BracketsHelper.Close };
+
         public IExpression Parse(string text, IErrors errors)
         {
             IExpression expression = new Expression();
@@ -22,23 +28,31 @@ namespace Calculator
             var startIndex = 0;
             for (var i = 0; i < text.Length; i++)
             {
-                if (OperatorsHelper.Possible.Contains(text[i]))
+                var ch = text[i];
+                var isOperator = Operators.Contains(ch);
+                var isBracket = Brackets.Contains(ch);
+
+                if (isOperator || isBracket)
                 {
                     if (startIndex != i)
                     {
-                        ParseFloatSubString(text, startIndex, i - startIndex, expression, errors);
+                        ParseValueSubString(text, startIndex, i - startIndex, expression, errors);
                     }
 
-                    ParseMathOperator(text, i, expression);
+                    if (isOperator)
+                    {
+                        expression.Add(new ExpressionComponent(ch.ToOperator()));
+                    }
+                    else
+                    {
+                        expression.Add(new ExpressionComponent(ch.ToBracket()));
+                    }
+
                     startIndex = i + 1;
 
                     if (expression.Count > 1 &&
                         expression[^2].Type == ComponentType.Operator &&
-                        expression[^1].Type == ComponentType.Operator &&
-                        expression[^2].Operator != OperatorType.Begin &&
-                        expression[^2].Operator != OperatorType.End &&
-                        expression[^1].Operator != OperatorType.Begin &&
-                        expression[^1].Operator != OperatorType.End)
+                        expression[^1].Type == ComponentType.Operator)
                     {
                         errors.Add(
                             $"Error: Double operator '{expression[^2].Operator.ToChar()}{expression[^1].Operator.ToChar()}'.");
@@ -50,7 +64,7 @@ namespace Calculator
 
                 if (i == text.Length - 1)
                 {
-                    ParseFloatSubString(text, startIndex, i - startIndex + 1, expression, errors);
+                    ParseValueSubString(text, startIndex, i - startIndex + 1, expression, errors);
                 }
             }
 
@@ -73,14 +87,14 @@ namespace Calculator
             }
 
             var first = expression[0];
-            if (first.Type == ComponentType.Operator && first.Operator != OperatorType.Begin)
+            if (first.Type == ComponentType.Operator)
             {
                 errors.Add($"Error: Expression starts with operator '{first.Operator.ToChar()}'.");
                 return;
             }
 
             var last = expression[^1];
-            if (last.Type == ComponentType.Operator && last.Operator != OperatorType.End)
+            if (last.Type == ComponentType.Operator)
             {
                 errors.Add($"Error: Expression ends with operator '{last.Operator.ToChar()}'.");
                 return;
@@ -90,23 +104,23 @@ namespace Calculator
             for (var i = 0; i < expression.Count; i++)
             {
                 var c = expression[i];
-                if (c.Type != ComponentType.Operator)
+                if (c.Type != ComponentType.Bracket)
                 {
                     continue;
                 }
 
-                if (c.Operator == OperatorType.Begin)
+                if (c.Bracket == BracketType.Open)
                 {
                     balance++;
                     if (i + 1 < expression.Count &&
-                        expression[i + 1].Type == ComponentType.Operator &&
-                        expression[i + 1].Operator == OperatorType.End)
+                        expression[i + 1].Type == ComponentType.Bracket &&
+                        expression[i + 1].Bracket == BracketType.Close)
                     {
                         errors.Add("Error: Empty parentheses.");
                         return;
                     }
                 }
-                else if (c.Operator == OperatorType.End)
+                else
                 {
                     balance--;
                     if (balance < 0)
@@ -123,7 +137,7 @@ namespace Calculator
             }
         }
 
-        private void ParseFloatSubString(
+        private void ParseValueSubString(
             string text,
             int startIndex,
             int length,
@@ -131,7 +145,7 @@ namespace Calculator
             IErrors errors)
         {
             var subString = text.AsSpan(startIndex, length);
-            if (float.TryParse(subString, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+            if (decimal.TryParse(subString, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
             {
                 expression.Add(new ExpressionComponent(val));
             }
@@ -139,12 +153,6 @@ namespace Calculator
             {
                 errors.Add($"Error: '{subString}' not parsed.");
             }
-        }
-
-        private void ParseMathOperator(string text, int index, IExpression expression)
-        {
-            var mathOperationType = text[index].ToOperator();
-            expression.Add(new ExpressionComponent(mathOperationType));
         }
     }
 }

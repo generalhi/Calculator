@@ -6,9 +6,9 @@ using Calculator.Interfaces;
 
 namespace Calculator
 {
-    public class Calculator
+    public class CalculatorEngine
     {
-        public float? Run(string text, IParser parser, IErrors errors)
+        public decimal? Run(string text, IParser parser, IErrors errors)
         {
             errors.Clear();
 
@@ -30,7 +30,7 @@ namespace Calculator
             return CalcExpression(expression, errors);
         }
 
-        private static float? CalcExpression(IExpression expression, IErrors errors)
+        private static decimal? CalcExpression(IExpression expression, IErrors errors)
         {
             var stack = new Stack<IExpressionComponent>();
 #if DEBUG
@@ -56,7 +56,7 @@ namespace Calculator
 
                         var c2 = stack.Pop();
                         var c1 = stack.Pop();
-                        if (c.Operator == OperatorType.Div && c2.Value == 0f)
+                        if (c.Operator == OperatorType.Div && c2.Value == 0m)
                         {
                             errors.Add("Error: Division by zero.");
                             return null;

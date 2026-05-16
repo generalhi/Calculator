@@ -30,7 +30,7 @@
 
                 var errors = new Errors();
                 var parser = new Parser();
-                var calculator = new Calculator();
+                var calculator = new CalculatorEngine();
                 var result = calculator.Run(text, parser, errors);
 
                 if (result == null)

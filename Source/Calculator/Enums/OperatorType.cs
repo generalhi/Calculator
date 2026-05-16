@@ -5,8 +5,6 @@
         Add,
         Sub,
         Mul,
-        Div,
-        Begin,
-        End
+        Div
     }
 }

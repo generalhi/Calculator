@@ -12,8 +12,6 @@ public class OperatorTypeExtensionsTests
     [TestCase(OperatorType.Sub, ExpectedResult = OperatorsHelper.Sub)]
     [TestCase(OperatorType.Mul, ExpectedResult = OperatorsHelper.Mul)]
     [TestCase(OperatorType.Div, ExpectedResult = OperatorsHelper.Div)]
-    [TestCase(OperatorType.Begin, ExpectedResult = OperatorsHelper.Begin)]
-    [TestCase(OperatorType.End, ExpectedResult = OperatorsHelper.End)]
     public char ToCharTests(OperatorType type)
     {
         return type.ToChar();
@@ -23,8 +21,6 @@ public class OperatorTypeExtensionsTests
     [TestCase(OperatorsHelper.Sub, ExpectedResult = OperatorType.Sub)]
     [TestCase(OperatorsHelper.Mul, ExpectedResult = OperatorType.Mul)]
     [TestCase(OperatorsHelper.Div, ExpectedResult = OperatorType.Div)]
-    [TestCase(OperatorsHelper.Begin, ExpectedResult = OperatorType.Begin)]
-    [TestCase(OperatorsHelper.End, ExpectedResult = OperatorType.End)]
     public OperatorType ToOperatorTests(char c)
     {
         return c.ToOperator();

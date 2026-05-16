@@ -10,7 +10,7 @@ public class ParserTests
     [TestCase("2 +2", ExpectedResult = "2+2")]
     [TestCase("2+ 2", ExpectedResult = "2+2")]
     [TestCase("2.1+2", ExpectedResult = "2.1+2")]
-    [TestCase("2+2222222222222222222.22222222", ExpectedResult = "2+2.2222223E+18")]
+    [TestCase("2+2222222222222222222.22222222", ExpectedResult = "2+2222222222222222222.22222222")]
     [TestCase("2*(2+2)", ExpectedResult = "2*(2+2)")]
     [TestCase("2(2+2)", ExpectedResult = "2*(2+2)")]
     [TestCase("(2+2)2", ExpectedResult = "(2+2)*2")]

@@ -3,6 +3,7 @@
     public enum ComponentType
     {
         Value,
-        Operator
+        Operator,
+        Bracket
     }
 }

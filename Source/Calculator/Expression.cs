@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Calculator.Entities;
 using Calculator.Enums;
 using Calculator.Extensions;
@@ -32,28 +32,22 @@ namespace Calculator
                     continue;
                 }
 
-                switch (item.Operator)
+                if (item.Type != ComponentType.Bracket)
                 {
-                    case OperatorType.Begin:
-                    {
-                        if (_items[i - 1].Type != ComponentType.Operator)
-                        {
-                            _items.Insert(i, new ExpressionComponent(OperatorType.Mul));
-                            i++;
-                        }
+                    continue;
+                }
 
-                        break;
-                    }
-                    case OperatorType.End:
-                    {
-                        if (_items[i + 1].Type != ComponentType.Operator)
-                        {
-                            _items.Insert(i + 1, new ExpressionComponent(OperatorType.Mul));
-                            i++;
-                        }
-
-                        break;
-                    }
+                if (item.Bracket == BracketType.Open &&
+                    _items[i - 1].Type == ComponentType.Value)
+                {
+                    _items.Insert(i, new ExpressionComponent(OperatorType.Mul));
+                    i++;
+                }
+                else if (item.Bracket == BracketType.Close &&
+                         _items[i + 1].Type == ComponentType.Value)
+                {
+                    _items.Insert(i + 1, new ExpressionComponent(OperatorType.Mul));
+                    i++;
                 }
             }
         }
@@ -72,21 +66,29 @@ namespace Calculator
                         list.Add(item);
                         break;
                     }
-                    case ComponentType.Operator:
+                    case ComponentType.Bracket:
                     {
-                        if (item.Operator == OperatorType.End)
+                        if (item.Bracket == BracketType.Open)
                         {
-                            while (stack.Peek().Operator != OperatorType.Begin)
+                            stack.Push(item);
+                        }
+                        else
+                        {
+                            while (stack.Peek().Type != ComponentType.Bracket)
                             {
                                 list.Add(stack.Pop());
                             }
 
                             stack.Pop();
-                            break;
                         }
 
+                        break;
+                    }
+                    case ComponentType.Operator:
+                    {
                         if (stack.Count > 0 &&
-                            CheckPriority(stack.Peek(), item))
+                            stack.Peek().Type == ComponentType.Operator &&
+                            OperatorsHelper.Priority[stack.Peek().Operator] >= OperatorsHelper.Priority[item.Operator])
                         {
                             list.Add(stack.Pop());
                         }
@@ -104,20 +106,6 @@ namespace Calculator
 
             _items.Clear();
             _items.AddRange(list);
-        }
-
-        private static bool CheckPriority(
-            IExpressionComponent c1,
-            IExpressionComponent c2)
-        {
-            if (c2.Operator == OperatorType.Begin)
-            {
-                return false;
-            }
-
-            var p1 = OperatorsHelper.Priority[c1.Operator];
-            var p2 = OperatorsHelper.Priority[c2.Operator];
-            return p1 >= p2;
         }
 
         public override string ToString()
@@ -141,6 +129,11 @@ namespace Calculator
                     case ComponentType.Operator:
                     {
                         sb.Append(item.Operator.ToChar());
+                        break;
+                    }
+                    case ComponentType.Bracket:
+                    {
+                        sb.Append(item.Bracket.ToChar());
                         break;
                     }
                 }

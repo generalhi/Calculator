@@ -38,11 +38,7 @@ namespace Calculator.Helpers
 
         public void Append(char c)
         {
-            if (_position >= _buffer.Length - 1)
-            {
-                ResizeBuffer(1);
-            }
-
+            ResizeBuffer(1);
             _buffer[_position++] = c;
         }
 
