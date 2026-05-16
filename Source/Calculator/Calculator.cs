@@ -22,11 +22,7 @@ namespace Calculator
             Console.WriteLine(text);
             Console.WriteLine(expression.ToString());
 #endif
-            expression.ToReversePolishNotation(errors);
-            if (errors.IsPresent)
-            {
-                return null;
-            }
+            expression.ToReversePolishNotation();
 #if DEBUG
             Console.WriteLine(expression.ToString());
             Console.WriteLine("Operations:");
@@ -37,7 +33,9 @@ namespace Calculator
         private static float? CalcExpression(IExpression expression, IErrors errors)
         {
             var stack = new Stack<IExpressionComponent>();
+#if DEBUG
             var n = 1;
+#endif
             for (var i = 0; i < expression.Count; i++)
             {
                 var c = expression[i];

@@ -6,6 +6,6 @@
         int Count { get; }
         void Add(IExpressionComponent item);
         void Normalize();
-        void ToReversePolishNotation(IErrors errors);
+        void ToReversePolishNotation();
     }
 }

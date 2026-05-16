@@ -11,7 +11,8 @@ namespace Calculator.Helpers
         private char[]? _rentedBuffer;
         private readonly int _capacity = 0;
 
-        public int Length => _buffer.Length;
+        public int Capacity => _buffer.Length;
+        public int Length => _position;
         public ref char this[int index] => ref _buffer[index];
 
         public NewStringBuilder()
@@ -45,7 +46,7 @@ namespace Calculator.Helpers
             _buffer[_position++] = c;
         }
 
-        public void Append(ReadOnlySpan<char> str)
+        public void Append(scoped ReadOnlySpan<char> str)
         {
             ResizeBuffer(str.Length);
 
@@ -53,7 +54,7 @@ namespace Calculator.Helpers
             _position += str.Length;
         }
 
-        public void AppendLine(ReadOnlySpan<char> str)
+        public void AppendLine(scoped ReadOnlySpan<char> str)
         {
             Append(str);
             Append(Environment.NewLine);

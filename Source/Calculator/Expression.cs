@@ -58,7 +58,7 @@ namespace Calculator
             }
         }
 
-        public void ToReversePolishNotation(IErrors errors)
+        public void ToReversePolishNotation()
         {
             var list = new List<IExpressionComponent>(_items.Count);
             var stack = new Stack<IExpressionComponent>(_items.Count);
@@ -97,10 +97,9 @@ namespace Calculator
                 }
             }
 
-            if (stack.Count > 0)
+            while (stack.Count > 0)
             {
-                var stackItems = stack.ToArray();
-                list.AddRange(stackItems);
+                list.Add(stack.Pop());
             }
 
             _items.Clear();
@@ -123,7 +122,7 @@ namespace Calculator
 
         public override string ToString()
         {
-            Span<char> dest = new char[64];
+            Span<char> dest = stackalloc char[64];
             using var sb = new NewStringBuilder();
 
             foreach (var item in _items)

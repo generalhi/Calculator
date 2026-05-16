@@ -9,11 +9,11 @@ public class NewStringBuilderTests
     [TestCase("0000000000000000", ExpectedResult = 16)]
     [TestCase("00000000000000000", ExpectedResult = 64)]
     [TestCase("000000000000000000", ExpectedResult = 64)]
-    public int ResizeBufLengthTest(string text)
+    public int ResizeBufCapacityTest(string text)
     {
         var sb = new NewStringBuilder();
         sb.Append(text);
-        return sb.Length;
+        return sb.Capacity;
     }
 
     [Test]
@@ -35,7 +35,8 @@ public class NewStringBuilderTests
         sb.Append('c');
 
         Assert.That(sb.ToString(), Is.EqualTo("0000000000000000c"));
-        Assert.That(sb.Length, Is.EqualTo(64));
+        Assert.That(sb.Capacity, Is.EqualTo(64));
+        Assert.That(sb.Length, Is.EqualTo(17));
     }
 
     [Test]
