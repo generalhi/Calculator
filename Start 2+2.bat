@@ -1,1 +1,1 @@
-start Source\Calculator\bin\Debug\net6.0\Calculator.exe "2+2"
+start Source\Calculator\bin\Release\net8.0\Calculator.exe "2+2"
