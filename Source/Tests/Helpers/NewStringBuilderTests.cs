@@ -16,6 +16,16 @@ public class NewStringBuilderTests
         return sb.Capacity;
     }
 
+    [TestCase(32, ExpectedResult = 32)]
+    [TestCase(100, ExpectedResult = 100)]
+    [TestCase(0, ExpectedResult = 16)]
+    [TestCase(-5, ExpectedResult = 16)]
+    public int InitialCapacityTest(int initialCapacity)
+    {
+        var sb = new NewStringBuilder(initialCapacity);
+        return sb.Capacity;
+    }
+
     [Test]
     public void ClearTest()
     {
